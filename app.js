@@ -1,11 +1,6 @@
+const API_KEY = "PASTE_YOUR_FREE_GEMINI_API_KEY_HERE"; // Replace this with your actual key
+
 document.addEventListener('DOMContentLoaded', () => {
-    // UI Elements
-    const apiKeyInput = document.getElementById('apiKeyInput');
-    const saveKeyBtn = document.getElementById('saveKeyBtn');
-    const settingsBtn = document.getElementById('settingsBtn');
-    const apiModal = document.getElementById('apiModal');
-    const closeModalBtn = document.getElementById('closeModalBtn');
-    
     const skillsInput = document.getElementById('skillsInput');
     const skillsTagsContainer = document.getElementById('skillsTagsContainer');
     const searchBtn = document.getElementById('searchBtn');
@@ -20,45 +15,7 @@ document.addEventListener('DOMContentLoaded', () => {
     // State
     let skills = [];
     
-    // Initialize API Key from localStorage
-    const savedKey = localStorage.getItem('gemini_api_key');
-    if (savedKey) {
-        apiKeyInput.value = savedKey;
-    } else {
-        // Show modal on first load if no key
-        openModal();
-    }
 
-    // Modal Logic
-    function openModal() {
-        apiModal.classList.add('active');
-    }
-    
-    function closeModal() {
-        apiModal.classList.remove('active');
-    }
-
-    settingsBtn.addEventListener('click', openModal);
-    closeModalBtn.addEventListener('click', closeModal);
-    
-    saveKeyBtn.addEventListener('click', () => {
-        const key = apiKeyInput.value.trim();
-        if (key) {
-            localStorage.setItem('gemini_api_key', key);
-            closeModal();
-            // Show brief success feedback
-            const originalText = saveKeyBtn.innerText;
-            saveKeyBtn.innerText = 'Saved!';
-            setTimeout(() => { saveKeyBtn.innerText = originalText; }, 2000);
-        } else {
-            alert('Please enter a valid API key.');
-        }
-    });
-
-    // Close modal on outside click
-    apiModal.addEventListener('click', (e) => {
-        if (e.target === apiModal) closeModal();
-    });
 
     // Skills Tags Logic
     skillsInput.addEventListener('keydown', (e) => {
@@ -109,14 +66,12 @@ document.addEventListener('DOMContentLoaded', () => {
             return;
         }
 
-        const apiKey = localStorage.getItem('gemini_api_key');
-        if (!apiKey) {
-            alert('Please configure your Gemini API Key in the settings first.');
-            openModal();
+        if (!API_KEY || API_KEY === "PASTE_YOUR_FREE_GEMINI_API_KEY_HERE") {
+            alert('Please edit app.js to put your Gemini API Key before deploying.');
             return;
         }
 
-        await fetchJobs(skills, apiKey);
+        await fetchJobs(skills, API_KEY);
     });
 
     async function fetchJobs(skillsList, apiKey) {
