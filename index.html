@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gemini Job Finder</title>
+    <!-- Use Inter Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- BoxIcons for lightweight icons -->
+    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="glass-header">
+            <div class="logo">
+                <i class='bx bx-briefcase-alt-2'></i>
+                <span>JobFinder.ai</span>
+            </div>
+            <button id="settingsBtn" class="btn btn-icon" title="API Key Settings">
+                <i class='bx bx-cog'></i>
+            </button>
+        </header>
+
+        <!-- Main Hero Section -->
+        <main>
+            <section class="hero">
+                <div class="hero-content">
+                    <h1>Find your next role with <span class="text-gradient">AI Grounding</span></h1>
+                    <p>Enter your skills below. We use the Gemini API to search the live web for real, available job postings matching your profile.</p>
+                    
+                    <div class="search-box glass-panel">
+                        <div class="input-group">
+                            <i class='bx bx-search'></i>
+                            <input type="text" id="skillsInput" placeholder="e.g. React, Node.js, Python..." autocomplete="off">
+                        </div>
+                        <button id="searchBtn" class="btn btn-primary">
+                            <span>Find Jobs</span>
+                            <i class='bx bx-right-arrow-alt'></i>
+                        </button>
+                    </div>
+                    <div class="skills-tags" id="skillsTagsContainer">
+                        <!-- Tags will be dynamically added here -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Results Section -->
+            <section class="results-section" id="resultsSection" style="display: none;">
+                <div class="results-header">
+                    <h2>Available Jobs</h2>
+                    <span class="results-count" id="resultsCount">0 found</span>
+                </div>
+                
+                <div id="loadingState" class="loading-state" style="display: none;">
+                    <div class="loader"></div>
+                    <p>Searching the web for the best matches...</p>
+                </div>
+
+                <div id="errorState" class="error-state" style="display: none;">
+                    <i class='bx bx-error-circle'></i>
+                    <p id="errorMessage">Something went wrong.</p>
+                </div>
+
+                <div class="jobs-grid" id="jobsGrid">
+                    <!-- Job cards will be populated here -->
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- API Key Modal -->
+    <div class="modal-overlay" id="apiModal">
+        <div class="modal-content glass-panel">
+            <div class="modal-header">
+                <h3>Gemini API Settings</h3>
+                <button id="closeModalBtn" class="btn btn-icon"><i class='bx bx-x'></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Enter your FREE Gemini API Key. It is stored locally in your browser and never sent to our servers.</p>
+                <div class="input-group full-width">
+                    <i class='bx bx-key'></i>
+                    <input type="password" id="apiKeyInput" placeholder="AIzaSy...">
+                </div>
+                <div class="modal-actions">
+                    <button id="saveKeyBtn" class="btn btn-primary full-width">Save API Key</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
