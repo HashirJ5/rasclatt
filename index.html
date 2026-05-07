@@ -1,75 +1,284 @@
 <!DOCTYPE html>
-<html lang="en" class="dark">
+<html lang="en" class="scroll-smooth">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Gemini Job Finder</title>
-    <!-- Use Inter Font -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- BoxIcons for lightweight icons -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
-    <link rel="stylesheet" href="styles.css">
+  <meta charset="utf-8">
+  <meta content="width=device-width, initial-scale=1.0" name="viewport">
+  <title>Lumina - AI Job Search Platform</title>
+  
+  <!-- Google Fonts -->
+  <link href="https://fonts.googleapis.com" rel="preconnect">
+  <link crossorigin="" href="https://fonts.gstatic.com" rel="preconnect">
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=Playfair+Display:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+  <!-- BoxIcons for lightweight icons -->
+  <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+
+  <style>
+    /* Custom Scrollbar for dark theme */
+    ::-webkit-scrollbar {
+      width: 8px;
+    }
+    ::-webkit-scrollbar-track {
+      background: #09090b; 
+    }
+    ::-webkit-scrollbar-thumb {
+      background: #27272a; 
+      border-radius: 4px;
+    }
+    ::-webkit-scrollbar-thumb:hover {
+      background: #3f3f46; 
+    }
+    
+    .animate-on-scroll-hidden {
+      opacity: 0;
+      transform: translateY(20px);
+      transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+    }
+    .animate-on-scroll-visible {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  </style>
+<style type="text/tailwindcss">@import "tailwindcss";</style>
+<script src="https://cdn.tailwindcss.com"></script>
+<script>
+tailwind.config = {
+  important: '#app-root',
+  theme: {
+    extend: {
+      colors: {
+        zinc: {
+          950: '#09090b', 
+        }
+      },
+      fontFamily: {
+        'sans': ['Inter', 'sans-serif'],
+        'serif': ['Playfair Display', 'serif'],
+      },
+      animation: {
+        'float-slow': 'float 6s ease-in-out infinite',
+        'float-delayed': 'float 7s ease-in-out infinite 1s',
+        'pulse-slow': 'pulse 3s cubic-bezier(0.4, 0, 0.6, 1) infinite',
+      },
+      keyframes: {
+        float: {
+          '0%, 100%': { transform: 'translateY(0)' },
+          '50%': { transform: 'translateY(-20px)' },
+        }
+      }
+    }
+  }
+}
+</script>
 </head>
-<body>
-    <div class="app-container">
-        <!-- Header -->
-        <header class="glass-header">
-            <div class="logo">
-                <i class='bx bx-briefcase-alt-2'></i>
-                <span>JobFinder.ai</span>
-            </div>
 
-        </header>
+<body id="app-root">
+  <div class="font-sans bg-zinc-950 text-zinc-200 antialiased selection:bg-white/20 overflow-x-hidden min-h-screen flex flex-col">
 
-        <!-- Main Hero Section -->
-        <main>
-            <section class="hero">
-                <div class="hero-content">
-                    <h1>Find your next role with <span class="text-gradient">AI Grounding</span></h1>
-                    <p>Enter your skills below. We use the Gemini API to search the live web for real, available job postings matching your profile.</p>
-                    
-                    <div class="search-box glass-panel">
-                        <div class="input-group">
-                            <i class='bx bx-search'></i>
-                            <input type="text" id="skillsInput" placeholder="e.g. React, Node.js, Python..." autocomplete="off">
-                        </div>
-                        <button id="searchBtn" class="btn btn-primary">
-                            <span>Find Jobs</span>
-                            <i class='bx bx-right-arrow-alt'></i>
-                        </button>
-                    </div>
-                    <div class="skills-tags" id="skillsTagsContainer">
-                        <!-- Tags will be dynamically added here -->
-                    </div>
-                </div>
-            </section>
+  <!-- Navbar -->
+  <nav class="fixed top-0 w-full z-50 bg-zinc-950/80 backdrop-blur-md border-b border-white/5">
+    <div class="max-w-7xl mx-auto px-6 h-20 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2 group">
+        <div class="w-8 h-8 bg-white rounded-full flex items-center justify-center group-hover:rotate-12 transition-transform duration-300">
+          <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="black" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="lucide lucide-sparkles"><path d="m12 3-1.912 5.813a2 2 0 0 1-1.275 1.275L3 12l5.813 1.912a2 2 0 0 1 1.275 1.275L12 21l1.912-5.813a2 2 0 0 1 1.275-1.275L21 12l-5.813-1.912a2 2 0 0 1-1.275-1.275L12 3Z"></path></svg>
+        </div>
+        <span class="text-white font-serif text-xl tracking-tight">LuminaJobs</span>
+      </a>
 
-            <!-- Results Section -->
-            <section class="results-section" id="resultsSection" style="display: none;">
-                <div class="results-header">
-                    <h2>Available Jobs</h2>
-                    <span class="results-count" id="resultsCount">0 found</span>
-                </div>
-                
-                <div id="loadingState" class="loading-state" style="display: none;">
-                    <div class="loader"></div>
-                    <p>Searching the web for the best matches...</p>
-                </div>
+      <!-- Desktop Nav -->
+      <div class="hidden md:flex items-center gap-8 text-sm text-zinc-400">
+        <a href="#search" class="hover:text-white transition-colors">Find Jobs</a>
+        <a href="#features" class="hover:text-white transition-colors">How it Works</a>
+      </div>
 
-                <div id="errorState" class="error-state" style="display: none;">
-                    <i class='bx bx-error-circle'></i>
-                    <p id="errorMessage">Something went wrong.</p>
-                </div>
+      <div class="hidden md:flex items-center gap-4">
+        <button class="bg-white text-black px-5 py-2 rounded-full text-sm font-medium hover:bg-zinc-200 transition-colors">
+          Get Started
+        </button>
+      </div>
 
-                <div class="jobs-grid" id="jobsGrid">
-                    <!-- Job cards will be populated here -->
-                </div>
-            </section>
-        </main>
+      <!-- Mobile Menu Button -->
+      <button id="mobile-menu-btn" class="md:hidden text-white p-2">
+        <svg id="menu-icon" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" x2="20" y1="12" y2="12"></line><line x1="4" x2="20" y1="6" y2="6"></line><line x1="4" x2="20" y1="18" y2="18"></line></svg>
+        <svg id="close-icon" class="hidden" xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 6 6 18"></path><path d="m6 6 12 12"></path></svg>
+      </button>
     </div>
 
-    <script src="app.js"></script>
+    <!-- Mobile Nav Dropdown -->
+    <div id="mobile-menu" class="hidden md:hidden bg-zinc-950 border-b border-white/10 p-6 space-y-4 absolute w-full">
+      <a href="#search" class="block text-zinc-400 hover:text-white">Find Jobs</a>
+      <a href="#features" class="block text-zinc-400 hover:text-white">How it Works</a>
+      <div class="pt-4 border-t border-white/10 flex flex-col gap-3">
+        <button class="bg-white text-black w-full py-2 rounded-full font-medium">Get Started</button>
+      </div>
+    </div>
+  </nav>
+
+  <main class="flex-grow">
+    <section id="search" class="relative pt-32 pb-20 overflow-hidden min-h-[90vh] flex flex-col justify-start items-center bg-zinc-950">
+      <!-- Background Glows -->
+      <div class="absolute top-0 left-1/2 -translate-x-1/2 w-full max-w-[800px] h-[500px] bg-purple-600/10 rounded-full blur-[120px] pointer-events-none"></div>
+      <div class="absolute bottom-0 right-0 w-full max-w-[600px] h-[600px] bg-blue-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+      <div class="relative z-10 max-w-5xl mx-auto px-6 w-full text-center mt-10" data-animation-on-scroll>
+        <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white/5 border border-white/10 text-xs text-zinc-300 mb-8 backdrop-blur-sm">
+          <span class="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span>
+          AI Search Grounding Active
+        </div>
+
+        <h1 class="text-5xl md:text-7xl lg:text-8xl font-serif text-transparent bg-clip-text bg-gradient-to-b from-white via-white to-zinc-500 mb-8 leading-[1.1] tracking-tight">
+          The Modern <br>
+          <span class="italic font-light">Job Platform</span>
+        </h1>
+
+        <p class="text-lg text-zinc-400 max-w-2xl mx-auto mb-12 font-light">
+          Streamline your career search. Enter your skills below and let AI hunt the web for the best matching opportunities in real-time.
+        </p>
+
+        <!-- JOB SEARCH UI INTEGRATED INTO HERO -->
+        <div class="max-w-3xl mx-auto mb-8">
+          <div class="flex flex-col sm:flex-row p-2 gap-2 bg-zinc-900/60 backdrop-blur-xl border border-white/10 rounded-2xl shadow-2xl focus-within:border-white/30 transition-all">
+            <div class="flex-1 flex items-center px-4 gap-3">
+              <i class='bx bx-search text-zinc-400 text-xl'></i>
+              <input type="text" id="skillsInput" placeholder="e.g. React, Node.js, Python..." class="w-full bg-transparent border-none outline-none text-white placeholder-zinc-500 font-sans text-lg h-12">
+            </div>
+            <button id="searchBtn" class="bg-white text-black px-8 py-3 rounded-xl font-medium hover:bg-zinc-200 transition-colors flex items-center justify-center gap-2">
+              Find Jobs <i class='bx bx-right-arrow-alt text-lg'></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2 justify-center mb-16 min-h-[40px]" id="skillsTagsContainer">
+          <!-- Tags go here -->
+        </div>
+
+        <!-- RESULTS SECTION -->
+        <div id="resultsSection" class="text-left w-full max-w-6xl mx-auto" style="display: none;">
+          <div class="flex items-center justify-between mb-8 border-b border-white/10 pb-4">
+            <h2 class="text-2xl font-serif text-white">Available Opportunities</h2>
+            <span id="resultsCount" class="text-xs bg-purple-500/20 text-purple-300 px-3 py-1 rounded-full border border-purple-500/20">0 found</span>
+          </div>
+
+          <div id="loadingState" class="hidden flex-col items-center justify-center py-20 text-zinc-400 gap-4">
+            <div class="w-10 h-10 border-4 border-white/10 border-t-white rounded-full animate-spin"></div>
+            <p>Searching the live web...</p>
+          </div>
+
+          <div id="errorState" class="hidden flex-col items-center justify-center py-20 text-red-400 gap-4">
+            <i class='bx bx-error-circle text-5xl'></i>
+            <p id="errorMessage">Something went wrong.</p>
+          </div>
+
+          <div id="jobsGrid" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <!-- Job cards populated via app.js -->
+          </div>
+        </div>
+      </div>
+      
+      <!-- Floating UI Elements -->
+      <div class="absolute top-40 left-[5%] hidden xl:block animate-float-slow">
+        <div class="bg-zinc-800/80 backdrop-blur-md p-3 rounded-xl border border-white/10 flex items-center gap-3 w-48 shadow-2xl">
+            <img src="https://images.unsplash.com/photo-1534528741775-53994a69daeb?auto=format&fit=crop&w=64&h=64" alt="User" class="w-8 h-8 rounded-full object-cover">
+            <div>
+              <div class="h-2 w-20 bg-zinc-600 rounded-full mb-1"></div>
+              <div class="h-1.5 w-12 bg-zinc-700 rounded-full"></div>
+            </div>
+        </div>
+      </div>
+      <div class="absolute bottom-40 right-[5%] hidden xl:block animate-float-delayed">
+        <div class="bg-zinc-800/80 backdrop-blur-md p-3 rounded-xl border border-white/10 flex items-center gap-3 w-48 shadow-2xl">
+            <div class="w-8 h-8 rounded-full bg-purple-500/20 flex items-center justify-center">
+              <i class='bx bx-briefcase text-purple-400'></i>
+            </div>
+            <div>
+              <div class="text-xs text-white">New Job Found</div>
+              <div class="text-[10px] text-zinc-400">Just now</div>
+            </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Original Lumina Feature Sections Kept Intact Below -->
+    <section class="py-24 bg-zinc-950" id="features">
+      <!-- Feature section from original template -->
+      <div class="max-w-6xl mx-auto px-6">
+        <div class="text-center mb-16" data-animation-on-scroll>
+          <span class="text-xs font-semibold tracking-widest text-zinc-500 uppercase">Features & Benefits</span>
+          <h2 class="text-4xl md:text-5xl font-serif text-white mt-4">Solutions for your <br> career management</h2>
+        </div>
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+          <div class="bg-zinc-900/50 border border-white/5 rounded-3xl p-8 flex flex-col justify-between min-h-[300px] hover:border-white/10 transition-colors group" data-animation-on-scroll>
+            <div>
+                <h3 class="text-2xl text-white font-light leading-snug">
+                  An easy to <br>
+                  <span class="font-serif italic text-purple-300">UNDERSTAND</span> <br>
+                  summary of <br>
+                  <span class="bg-white text-black px-1 rounded-sm text-lg font-bold">roles</span>
+                </h3>
+            </div>
+          </div>
+          <div class="bg-zinc-900/50 border border-white/5 rounded-3xl p-8 flex flex-col items-center justify-center text-center min-h-[300px] hover:border-white/10 transition-colors relative overflow-hidden" data-animation-on-scroll>
+            <div class="absolute inset-0 bg-gradient-to-t from-black/80 to-transparent z-10"></div>
+            <h1 class="text-[120px] font-serif text-zinc-800 absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 select-none">AI</h1>
+            <div class="relative z-20">
+              <h3 class="text-2xl text-white font-serif mb-2">AI - Powered</h3>
+              <p class="text-sm text-zinc-400 max-w-[200px]">Automate hunting with our advanced intelligence engine.</p>
+            </div>
+          </div>
+          <div class="bg-zinc-900/50 border border-white/5 rounded-3xl p-8 flex flex-col justify-between min-h-[300px] hover:border-white/10 transition-colors relative overflow-hidden group" data-animation-on-scroll>
+            <div class="mt-auto relative z-10">
+                <h3 class="text-xl text-white font-serif mb-1">All Bases Captured</h3>
+                <p class="text-sm text-zinc-400">Real-time sync across Indeed and LinkedIn.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="bg-zinc-950 pt-20 pb-10 overflow-hidden relative border-t border-white/5">
+    <div class="max-w-7xl mx-auto px-6 grid grid-cols-2 md:grid-cols-4 gap-8">
+       <div class="col-span-2 md:col-span-1">
+          <div class="flex items-center gap-2 mb-4">
+            <span class="text-white font-serif tracking-tight">LuminaJobs</span>
+          </div>
+          <p class="text-xs text-zinc-500">
+             © 2024 LuminaJobs Inc. <br>
+             All rights reserved.
+          </p>
+       </div>
+    </div>
+  </footer>
+
+  </div>
+
+  <script src="app.js"></script>
+  <script>
+    // Minimal logic for the rest of the template
+    document.addEventListener('DOMContentLoaded', () => {
+      const menuBtn = document.getElementById('mobile-menu-btn');
+      const mobileMenu = document.getElementById('mobile-menu');
+      
+      if(menuBtn && mobileMenu) {
+        menuBtn.addEventListener('click', () => {
+          mobileMenu.classList.toggle('hidden');
+        });
+      }
+
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('animate-on-scroll-visible');
+            observer.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.1 });
+
+      document.querySelectorAll('[data-animation-on-scroll]').forEach(el => {
+        el.classList.add('animate-on-scroll-hidden');
+        observer.observe(el);
+      });
+    });
+  </script>
 </body>
 </html>
