@@ -1,4 +1,4 @@
-const API_KEY = "AIzaSyAyA9WvCAsldYu3l8cp7rlrsgFvsJbDHr0"; // Replace this with your actual key
+const API_KEY = "AIzaSyBBiioZan9BoH6CCzg1kEwJFwrivPI0ERE"; // Replace this with your actual key
 
 document.addEventListener('DOMContentLoaded', () => {
     const skillsInput = document.getElementById('skillsInput');
